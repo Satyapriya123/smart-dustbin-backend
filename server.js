@@ -23,6 +23,7 @@ const ticketRoutes = require('./routes/ticketRoutes'); // <-- Moved up here
 app.use('/api/dustbins', dustbinRoutes);
 app.use('/api/auth', authRoutes); 
 app.use('/api/tickets', ticketRoutes); // <-- Moved up here
+app.use('/api/superadmin', require('./routes/superadmin'));
 
 // Test Route
 app.get('/api/test', (req, res) => {
