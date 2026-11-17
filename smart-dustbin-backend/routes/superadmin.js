@@ -35,17 +35,21 @@ router.put("/approve-user/:id", async (req, res) => {
     }
 });
 
-// Manually Add New User (Auto-Approved)
+// Manually Add New User / Admin (Auto-Approved)
 router.post("/add-user", async (req, res) => {
     try {
         const { email, password, role } = req.body;
+        const existing = await User.findOne({ email });
+        if (existing) return res.status(400).json({ error: "Email already exists." });
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = new User({ email, password: hashedPassword, role, status: 'approved' });
+        
+        const newUser = new User({ email, password: hashedPassword, role: role || 'user', status: 'approved' });
         await newUser.save();
         res.json({ success: true, user: newUser });
     } catch (error) {
-        res.status(500).json({ error: "Email may already exist." });
+        res.status(500).json({ error: "Failed to add user." });
     }
 });
 
